@@ -424,70 +424,72 @@ class CameraPickerState extends State<CameraPicker>
         stopwatch
           ..reset()
           ..start();
-        await Future.wait(
-          <Future<void>>[
-            wrapControllerMethod(
-              'getExposureOffsetStepSize',
-              () => newController.getExposureOffsetStepSize(),
-              description: description,
-              fallback: exposureStep,
-            ).then((value) => exposureStep = value),
-            wrapControllerMethod(
-              'getMaxExposureOffset',
-              () => newController.getMaxExposureOffset(),
-              description: description,
-              fallback: maxAvailableExposureOffset,
-            ).then((value) => maxAvailableExposureOffset = value),
-            wrapControllerMethod(
-              'getMinExposureOffset',
-              () => newController.getMinExposureOffset(),
-              description: description,
-              fallback: minAvailableExposureOffset,
-            ).then((value) => minAvailableExposureOffset = value),
-            wrapControllerMethod(
-              'getMaxZoomLevel',
-              () => newController.getMaxZoomLevel(),
-              description: description,
-              fallback: maxAvailableZoom,
-            ).then((value) => maxAvailableZoom = value),
-            wrapControllerMethod(
-              'getMinZoomLevel',
-              () => newController.getMinZoomLevel(),
-              description: description,
-              fallback: minAvailableZoom,
-            ).then((value) => minAvailableZoom = value),
-            wrapControllerMethod(
-              'getMinZoomLevel',
-              () => newController.getMinZoomLevel(),
-              description: description,
-              fallback: minAvailableZoom,
-            ).then((value) => minAvailableZoom = value),
-            if (pickerConfig.lockCaptureOrientation != null)
-              wrapControllerMethod<void>(
-                'lockCaptureOrientation',
-                () => newController.lockCaptureOrientation(
-                  pickerConfig.lockCaptureOrientation,
-                ),
+        try {
+          Future.wait(
+            <Future<void>>[
+              wrapControllerMethod(
+                'getExposureOffsetStepSize',
+                () => newController.getExposureOffsetStepSize(),
                 description: description,
-              ),
-            // Do not set flash modes for the front camera.
-            if (description.lensDirection != CameraLensDirection.front &&
-                pickerConfig.preferredFlashMode != FlashMode.auto)
-              wrapControllerMethod<void>(
-                'setFlashMode',
-                () => newController.setFlashMode(
-                  pickerConfig.preferredFlashMode,
-                ),
+                fallback: exposureStep,
+              ).then((value) => exposureStep = value),
+              wrapControllerMethod(
+                'getMaxExposureOffset',
+                () => newController.getMaxExposureOffset(),
                 description: description,
-                onError: () {
-                  validFlashModes[description]?.remove(
+                fallback: maxAvailableExposureOffset,
+              ).then((value) => maxAvailableExposureOffset = value),
+              wrapControllerMethod(
+                'getMinExposureOffset',
+                () => newController.getMinExposureOffset(),
+                description: description,
+                fallback: minAvailableExposureOffset,
+              ).then((value) => minAvailableExposureOffset = value),
+              wrapControllerMethod(
+                'getMaxZoomLevel',
+                () => newController.getMaxZoomLevel(),
+                description: description,
+                fallback: maxAvailableZoom,
+              ).then((value) => maxAvailableZoom = value),
+              wrapControllerMethod(
+                'getMinZoomLevel',
+                () => newController.getMinZoomLevel(),
+                description: description,
+                fallback: minAvailableZoom,
+              ).then((value) => minAvailableZoom = value),
+              wrapControllerMethod(
+                'getMinZoomLevel',
+                () => newController.getMinZoomLevel(),
+                description: description,
+                fallback: minAvailableZoom,
+              ).then((value) => minAvailableZoom = value),
+              if (pickerConfig.lockCaptureOrientation != null)
+                wrapControllerMethod<void>(
+                  'lockCaptureOrientation',
+                  () => newController.lockCaptureOrientation(
+                    pickerConfig.lockCaptureOrientation,
+                  ),
+                  description: description,
+                ),
+              // Do not set flash modes for the front camera.
+              if (description.lensDirection != CameraLensDirection.front &&
+                  pickerConfig.preferredFlashMode != FlashMode.auto)
+                wrapControllerMethod<void>(
+                  'setFlashMode',
+                  () => newController.setFlashMode(
                     pickerConfig.preferredFlashMode,
-                  );
-                },
-              ),
-          ],
-          eagerError: false,
-        );
+                  ),
+                  description: description,
+                  onError: () {
+                    validFlashModes[description]?.remove(
+                      pickerConfig.preferredFlashMode,
+                    );
+                  },
+                ),
+            ],
+            eagerError: false,
+          );
+        } catch (e) {}
         stopwatch.stop();
         realDebugPrint("${stopwatch.elapsed} for config's update.");
         innerController = newController;
@@ -1658,9 +1660,6 @@ class CameraPickerState extends State<CameraPicker>
         builder: (_, CameraValue value, Widget? child) {
           final lockedOrientation = value.lockedCaptureOrientation;
           int? quarterTurns = lockedOrientation?.index;
-          if (quarterTurns == null) {
-            return child!;
-          }
           if (value.deviceOrientation == DeviceOrientation.landscapeLeft) {
             quarterTurns--;
           } else if (value.deviceOrientation ==
