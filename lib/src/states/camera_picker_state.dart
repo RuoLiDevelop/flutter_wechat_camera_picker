@@ -1660,6 +1660,9 @@ class CameraPickerState extends State<CameraPicker>
         builder: (_, CameraValue value, Widget? child) {
           final lockedOrientation = value.lockedCaptureOrientation;
           int? quarterTurns = lockedOrientation?.index;
+          if (quarterTurns == null) {
+            return child!;
+          }
           if (value.deviceOrientation == DeviceOrientation.landscapeLeft) {
             quarterTurns--;
           } else if (value.deviceOrientation ==
