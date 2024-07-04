@@ -440,37 +440,37 @@ class CameraPickerState extends State<CameraPicker>
                 () => newController.getExposureOffsetStepSize(),
                 description: description,
                 fallback: exposureStep,
-              ).then((value) => exposureStep = value),
+              ).then((value) => exposureStep = value ?? 0),
               wrapControllerMethod(
                 'getMaxExposureOffset',
                 () => newController.getMaxExposureOffset(),
                 description: description,
                 fallback: maxAvailableExposureOffset,
-              ).then((value) => maxAvailableExposureOffset = value),
+              ).then((value) => maxAvailableExposureOffset = value ?? 0),
               wrapControllerMethod(
                 'getMinExposureOffset',
                 () => newController.getMinExposureOffset(),
                 description: description,
                 fallback: minAvailableExposureOffset,
-              ).then((value) => minAvailableExposureOffset = value),
+              ).then((value) => minAvailableExposureOffset = value ?? 0),
               wrapControllerMethod(
                 'getMaxZoomLevel',
                 () => newController.getMaxZoomLevel(),
                 description: description,
                 fallback: maxAvailableZoom,
-              ).then((value) => maxAvailableZoom = value),
+              ).then((value) => maxAvailableZoom = value ?? 1),
               wrapControllerMethod(
                 'getMinZoomLevel',
                 () => newController.getMinZoomLevel(),
                 description: description,
                 fallback: minAvailableZoom,
-              ).then((value) => minAvailableZoom = value),
+              ).then((value) => minAvailableZoom = value ?? 1),
               wrapControllerMethod(
                 'getMinZoomLevel',
                 () => newController.getMinZoomLevel(),
                 description: description,
                 fallback: minAvailableZoom,
-              ).then((value) => minAvailableZoom = value),
+              ).then((value) => minAvailableZoom = value ?? 1),
               if (pickerConfig.lockCaptureOrientation != null)
                 wrapControllerMethod<void>(
                   'lockCaptureOrientation',
